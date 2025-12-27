@@ -1,0 +1,13 @@
+FROM python:3.12-slim AS build
+ADD . /pythonapp
+WORKDIR /pythonapp
+RUN pip install --prefix=/devops -r requirements.txt
+
+FROM python:3.12-slim AS runtime 
+LABEL project="pythonapp"
+LABEL author="devops team"
+COPY --from=build /pythonapp /laxmikanth
+COPY --from=build /devops /usr/local 
+WORKDIR /laxmikanth
+EXPOSE 5001
+CMD ["python", "app.py"]
